@@ -55,6 +55,16 @@ public class Library implements Serializable {
         member.returnBook(book);
     }
 
+    public Member getBorrowerOf(Book book) {
+        // Identify member of loaned book
+        for (Member m : members.values()) {
+            if (m.getBorrowedBooks().contains(book)) {
+                return m;
+            }
+        }
+        return null; // Account for book not currently being loaned
+    }
+
     public void listLoanedBooks() {
         // Flag to track if any books are currently loaned out
         boolean found = false;
@@ -62,15 +72,21 @@ public class Library implements Serializable {
         // Loop through all books in the collection
         for (Book b : books.values()) {
             if (b.isLoaned()) {
-                System.out.println(b); // Print the loaned book
-                found = true; // Mark that we found at least one loaned book
+                Member borrower = getBorrowerOf(b); 
+
+                // Print loaned book
+                if (borrower != null) {
+                        System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
+                    } else {
+                        System.out.println(b + " [Borrower unknown]"); // Account for unfound member
+                }
+                found = true; // Mark that at least one loaned book was found
             }
         }
-        
         // If no loaned books were found, print a message
         if (!found) {
-            System.out.println("There are currently no books loaned out.");
-        } 
+            System.out.println("There are currently no books on loan.");
+        }
     }
 
     public void listAvailableBooks() {
@@ -99,10 +115,22 @@ public class Library implements Serializable {
         } else {
             // If the library collection is not empty, print each book's info
             for (Book b : books.values()) {
-                System.out.println(b);
+                if (b.isLoaned()) {
+                    Member borrower = getBorrowerOf(b);
+
+                    // Print loaned book
+                    if (borrower != null) {
+                        System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
+                    } else {
+                        System.out.println(b + " [Borrower unknown]"); // Account for unfound member
+                    }
+                } else {
+                    System.out.println(b);
+                }
             }
         }
     }
+
 
     public void registerMember(Member member) {
         members.put(member.getMemberId(), member);

@@ -76,4 +76,25 @@ public class Library implements Serializable {
             return (Library) in.readObject();
         }
     }
+
+    public Member getMemberById(String memberId) {
+        return members.get(memberId);
+    }
+
+    public List<Member> getAllMembers() {
+        return new ArrayList<>(members.values());
+    }
+
+    public void listAvailableBooks() {
+        for (Book b : books.values()) {
+            if (!b.isLoaned()) System.out.println(b);
+        }
+    }
+
+    public void listAllBooks() {
+        for (Book b : books.values()) {
+            System.out.println(b);
+        }
+    }
+
 }

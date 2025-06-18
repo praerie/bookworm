@@ -14,28 +14,6 @@ public class Library implements Serializable {
         books.put(book.getIsbn(), book);
     }
 
-    public void registerMember(Member member) {
-        members.put(member.getMemberId(), member);
-    }
-
-    public Member getMemberById(String memberId) {
-        return members.get(memberId);
-    }
-
-    public List<Member> getAllMembers() {
-        return new ArrayList<>(members.values());
-    }
-
-    public List<Member> searchMembersByName(String name) {
-        List<Member> matches = new ArrayList<>();
-        for (Member m : members.values()) {
-            if (m.getName().equalsIgnoreCase(name)) {
-                matches.add(m);
-            }
-        }
-        return matches;
-    }
-
     public Book searchByIsbn(String isbn) {
         return books.get(isbn);
     }
@@ -77,18 +55,6 @@ public class Library implements Serializable {
         member.returnBook(book);
     }
 
-    public void saveToFile(String filename) throws IOException {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-            out.writeObject(this);
-        }
-    }
-
-    public static Library loadFromFile(String filename) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            return (Library) in.readObject();
-        }
-    }
-
     public void listLoanedBooks() {
         // Flag to track if any books are currently loaned out
         boolean found = false;
@@ -127,12 +93,48 @@ public class Library implements Serializable {
     }
 
     public void listAllBooks() {
+        // Check if library collection is empty
         if (books.isEmpty()) {
             System.out.println("The catalogue is empty.");
         } else {
+            // If the library collection is not empty, print each book's info
             for (Book b : books.values()) {
                 System.out.println(b);
             }
+        }
+    }
+
+    public void registerMember(Member member) {
+        members.put(member.getMemberId(), member);
+    }
+
+    public Member getMemberById(String memberId) {
+        return members.get(memberId);
+    }
+
+    public List<Member> getAllMembers() {
+        return new ArrayList<>(members.values());
+    }
+
+    public List<Member> searchMembersByName(String name) {
+        List<Member> matches = new ArrayList<>();
+        for (Member m : members.values()) {
+            if (m.getName().equalsIgnoreCase(name)) {
+                matches.add(m);
+            }
+        }
+        return matches;
+    }
+
+    public void saveToFile(String filename) throws IOException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(this);
+        }
+    }
+
+    public static Library loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            return (Library) in.readObject();
         }
     }
 }

@@ -18,6 +18,24 @@ public class Library implements Serializable {
         members.put(member.getMemberId(), member);
     }
 
+    public Member getMemberById(String memberId) {
+        return members.get(memberId);
+    }
+
+    public List<Member> getAllMembers() {
+        return new ArrayList<>(members.values());
+    }
+
+    public List<Member> searchMembersByName(String name) {
+        List<Member> matches = new ArrayList<>();
+        for (Member m : members.values()) {
+            if (m.getName().equalsIgnoreCase(name)) {
+                matches.add(m);
+            }
+        }
+        return matches;
+    }
+
     public Book searchByIsbn(String isbn) {
         return books.get(isbn);
     }
@@ -59,12 +77,6 @@ public class Library implements Serializable {
         member.returnBook(book);
     }
 
-    public void listLoanedBooks() {
-        for (Book b : books.values()) {
-            if (b.isLoaned()) System.out.println(b);
-        }
-    }
-
     public void saveToFile(String filename) throws IOException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
             out.writeObject(this);
@@ -77,24 +89,50 @@ public class Library implements Serializable {
         }
     }
 
-    public Member getMemberById(String memberId) {
-        return members.get(memberId);
-    }
+    public void listLoanedBooks() {
+        // Flag to track if any books are currently loaned out
+        boolean found = false;
 
-    public List<Member> getAllMembers() {
-        return new ArrayList<>(members.values());
+        // Loop through all books in the collection
+        for (Book b : books.values()) {
+            if (b.isLoaned()) {
+                System.out.println(b); // Print the loaned book
+                found = true; // Mark that we found at least one loaned book
+            }
+        }
+        
+        // If no loaned books were found, print a message
+        if (!found) {
+            System.out.println("There are currently no books loaned out.");
+        } 
     }
 
     public void listAvailableBooks() {
+        // Flag to track if we find at least one available book
+        boolean found = false;
+
+        // Loop through all books in the collection
         for (Book b : books.values()) {
-            if (!b.isLoaned()) System.out.println(b);
+            // If the book is not currently loaned out, it's available
+            if (!b.isLoaned()) {
+                System.out.println(b); // Print the available book
+                found = true; // Mark that we found at least one available book
+            }
+        }
+
+        // If no available books were found, print a message
+        if (!found) {
+            System.out.println("There are currently no books available.");
         }
     }
 
     public void listAllBooks() {
-        for (Book b : books.values()) {
-            System.out.println(b);
+        if (books.isEmpty()) {
+            System.out.println("The catalogue is empty.");
+        } else {
+            for (Book b : books.values()) {
+                System.out.println(b);
+            }
         }
     }
-
 }

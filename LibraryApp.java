@@ -6,6 +6,7 @@ public class LibraryApp {
         Scanner scanner = new Scanner(System.in);
         Library library;
 
+        // Attempt to load saved library data from file; if not found, create a new library
         try {
             library = Library.loadFromFile("library.dat");
             System.out.println("Library data loaded.");
@@ -14,8 +15,11 @@ public class LibraryApp {
             System.out.println("New library created.");
         }
 
+        // Main application loop
         while (true) {
             int choice = -1;
+
+            // Menu input with validation
             while (true) {
                 try {
                     System.out.println("\n--- Library Menu ---");
@@ -32,20 +36,21 @@ public class LibraryApp {
                     System.out.println("11. Save & Exit");
                     System.out.print("Choice: ");
                     String input = scanner.nextLine();
-                    if (input.trim().isEmpty()) {
+                    if (input.trim().isEmpty()) {  // Pressing Enter exits the program
                         System.out.println("Exiting program.");
                         return;
                     }
-                    choice = Integer.parseInt(input);
+                    choice = Integer.parseInt(input); 
                     break;
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a number between 1 and 11, or press Enter to exit.");
                 }
             }
 
+            // Perform selected action
             try {
                 switch (choice) {
-                    case 1:
+                    case 1: // Add a new book to the library
                         System.out.print("Title: ");
                         String title = scanner.nextLine();
                         System.out.print("Author: ");
@@ -56,7 +61,7 @@ public class LibraryApp {
                         System.out.printf("Book added: \"%s\" by %s (ISBN-13: %s)\n", title, author, isbn);
                         break;
 
-                    case 2:
+                    case 2: // Loan a book to a member
                         System.out.print("ISBN-13: ");
                         isbn = scanner.nextLine();
                         System.out.print("Member ID: ");
@@ -69,7 +74,7 @@ public class LibraryApp {
                                 borrower.getName(), borrower.getMemberId());
                         break;
 
-                    case 3:
+                    case 3: // Return a previously loaned book
                         System.out.print("ISBN-13: ");
                         isbn = scanner.nextLine();
                         System.out.print("Member ID: ");
@@ -82,7 +87,7 @@ public class LibraryApp {
                                 returner.getName(), returner.getMemberId());
                         break;
 
-                    case 4:
+                    case 4: // Search for a book by title, author, or ISBN-13
                         String method;
                         while (true) {
                             System.out.print("Search by (title/author/ISBN) or press Enter to cancel: ");
@@ -115,22 +120,22 @@ public class LibraryApp {
                         }
                         break;
 
-                    case 5:
+                    case 5: // List all books currently on loan
                         System.out.println("Books currently on loan:");
                         library.listLoanedBooks();
                         break;
 
-                    case 6:
+                    case 6: // List all books that are available (not on loan)
                         System.out.println("Available books:");
                         library.listAvailableBooks();
                         break;
 
-                    case 7:
+                    case 7: // List the full catalogue of books
                         System.out.println("Full catalogue:");
                         library.listAllBooks();
                         break;
 
-                    case 8:
+                    case 8: // Register a new member manually with provided ID
                         System.out.print("Member Name: ");
                         String name = scanner.nextLine();
                         System.out.print("Member ID: ");
@@ -139,7 +144,7 @@ public class LibraryApp {
                         System.out.printf("Member registered: %s (ID: %s)\n", name, memberId);
                         break;
 
-                    case 9:
+                    case 9: // Search for a member by name or ID
                         String memberSearchMethod;
                         while (true) {
                             System.out.print("Search by (name/ID) or press Enter to cancel: ");
@@ -170,20 +175,22 @@ public class LibraryApp {
                         }
                         break;
 
-                    case 10:
+                    case 10: // List all registered members
                         System.out.println("Registered Members:");
                         library.getAllMembers().forEach(System.out::println);
                         break;
 
-                    case 11:
+                    case 11: // Save library state to file and exit program
                         library.saveToFile("library.dat");
                         System.out.println("Library saved. Goodbye!");
+                        scanner.close(); // Prevent resource leak
                         return;
 
-                    default:
+                    default: // Catch unexpected input
                         System.out.println("Invalid choice.");
                 }
             } catch (Exception e) {
+                // Print any exceptions that occur during menu action
                 System.out.println("Error: " + e.getMessage());
             }
         }

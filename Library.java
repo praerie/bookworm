@@ -2,22 +2,26 @@ import java.io.*;
 import java.util.*;
 
 public class Library implements Serializable {
-    private Map<String, Book> books;        // ISBN > Book
-    private Map<String, Member> members;    // ID > Member
+    private Map<String, Book> books;        // Map of ISBN to Book object
+    private Map<String, Member> members;    // Map of member ID to Member object
 
+    // Constructor initializes empty book and member collections
     public Library() {
         books = new HashMap<>();
         members = new HashMap<>();
     }
 
+    // Adds a new book to the library using its ISBN-13 num as the key
     public void addBook(Book book) {
         books.put(book.getIsbn(), book);
     }
 
+    // Retrieves a book by its ISBN-13
     public Book searchByIsbn(String isbn) {
         return books.get(isbn);
     }
 
+    // Returns a list of books with titles matching given string (case-insensitive)
     public List<Book> searchByTitle(String title) {
         List<Book> results = new ArrayList<>();
         for (Book b : books.values()) {
@@ -26,6 +30,7 @@ public class Library implements Serializable {
         return results;
     }
 
+    // Returns a list of books with authors matching given string (case-insensitive)
     public List<Book> searchByAuthor(String author) {
         List<Book> results = new ArrayList<>();
         for (Book b : books.values()) {
@@ -34,95 +39,89 @@ public class Library implements Serializable {
         return results;
     }
 
+    // Loans a book to a member by ISBN and member ID
     public void loanBook(String isbn, String memberId) throws Exception {
-        Book book = books.get(isbn);
-        Member member = members.get(memberId);
+        Book book = books.get(isbn);               // Find book by ISBN-13
+        Member member = members.get(memberId);     // Find member by ID
 
         if (book == null) throw new Exception("Book not found.");
         if (member == null) throw new Exception("Member not found.");
 
-        book.loanOut();
-        member.borrowBook(book);
+        book.loanOut();            // Mark the book as loaned
+        member.borrowBook(book);   // Add the book to the member's borrowed list
     }
 
+    // Returns a book from a member
     public void returnBook(String isbn, String memberId) throws Exception {
-        Book book = books.get(isbn);
-        Member member = members.get(memberId);
+        Book book = books.get(isbn);               // Find book by ISBN-13
+        Member member = members.get(memberId);     // Find member by ID
 
-        if (book == null || member == null) throw new Exception("Invalid book or member.");
+        if (book == null || member == null)
+            throw new Exception("Invalid book or member.");
 
-        book.returnBook();
-        member.returnBook(book);
+        book.returnBook();         // Mark the book as returned
+        member.returnBook(book);   // Remove the book from the member's borrowed list
     }
 
+    // Finds the member who currently has a specific book loaned
     public Member getBorrowerOf(Book book) {
-        // Identify member of loaned book
         for (Member m : members.values()) {
             if (m.getBorrowedBooks().contains(book)) {
-                return m;
+                return m;  // Return the member if they have the book
             }
         }
-        return null; // Account for book not currently being loaned
+        return null;  // Book is not currently borrowed by any member
     }
 
+    // Lists all currently loaned books and shows who borrowed each one
     public void listLoanedBooks() {
-        // Flag to track if any books are currently loaned out
-        boolean found = false;
+        boolean found = false;  // Tracks if any loaned books exist
 
-        // Loop through all books in the collection
         for (Book b : books.values()) {
             if (b.isLoaned()) {
-                Member borrower = getBorrowerOf(b); 
-
-                // Print loaned book
+                Member borrower = getBorrowerOf(b);  // Find who has the book
                 if (borrower != null) {
-                        System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
-                    } else {
-                        System.out.println(b + " [Borrower unknown]"); // Account for unfound member
+                    System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
+                } else {
+                    System.out.println(b + " [Borrower unknown]");
                 }
-                found = true; // Mark that at least one loaned book was found
+                found = true;
             }
         }
-        // If no loaned books were found, print a message
+
         if (!found) {
             System.out.println("There are currently no books on loan.");
         }
     }
 
+    // Lists all books that are not currently loaned out
     public void listAvailableBooks() {
-        // Flag to track if we find at least one available book
-        boolean found = false;
+        boolean found = false;  // Tracks if any available books exist
 
-        // Loop through all books in the collection
         for (Book b : books.values()) {
-            // If the book is not currently loaned out, it's available
             if (!b.isLoaned()) {
-                System.out.println(b); // Print the available book
-                found = true; // Mark that we found at least one available book
+                System.out.println(b);
+                found = true;
             }
         }
 
-        // If no available books were found, print a message
         if (!found) {
             System.out.println("There are currently no books available.");
         }
     }
 
+    // Lists the entire catalogue, showing status and borrower if applicable
     public void listAllBooks() {
-        // Check if library collection is empty
         if (books.isEmpty()) {
             System.out.println("The catalogue is empty.");
         } else {
-            // If the library collection is not empty, print each book's info
             for (Book b : books.values()) {
                 if (b.isLoaned()) {
                     Member borrower = getBorrowerOf(b);
-
-                    // Print loaned book
                     if (borrower != null) {
                         System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
                     } else {
-                        System.out.println(b + " [Borrower unknown]"); // Account for unfound member
+                        System.out.println(b + " [Borrower unknown]");
                     }
                 } else {
                     System.out.println(b);
@@ -131,19 +130,22 @@ public class Library implements Serializable {
         }
     }
 
-
+    // Registers a new library member
     public void registerMember(Member member) {
         members.put(member.getMemberId(), member);
     }
 
+    // Retrieves a member by their ID
     public Member getMemberById(String memberId) {
         return members.get(memberId);
     }
 
+    // Returns a list of all registered members
     public List<Member> getAllMembers() {
         return new ArrayList<>(members.values());
     }
 
+    // Searches for members by name (case-insensitive)
     public List<Member> searchMembersByName(String name) {
         List<Member> matches = new ArrayList<>();
         for (Member m : members.values()) {
@@ -154,12 +156,14 @@ public class Library implements Serializable {
         return matches;
     }
 
+    // Saves the current state of the library to a file
     public void saveToFile(String filename) throws IOException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
             out.writeObject(this);
         }
     }
 
+    // Loads a saved library from a file
     public static Library loadFromFile(String filename) throws IOException, ClassNotFoundException {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
             return (Library) in.readObject();

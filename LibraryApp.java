@@ -50,34 +50,34 @@ public class LibraryApp {
                         String title = scanner.nextLine();
                         System.out.print("Author: ");
                         String author = scanner.nextLine();
-                        System.out.print("ISBN: ");
+                        System.out.print("ISBN-13: ");
                         String isbn = scanner.nextLine();
                         library.addBook(new Book(title, author, isbn));
-                        System.out.printf("Book added: \"%s\" by %s (ISBN: %s)\n", title, author, isbn);
+                        System.out.printf("Book added: \"%s\" by %s (ISBN-13: %s)\n", title, author, isbn);
                         break;
 
                     case 2:
-                        System.out.print("ISBN: ");
+                        System.out.print("ISBN-13: ");
                         isbn = scanner.nextLine();
                         System.out.print("Member ID: ");
                         String memberId = scanner.nextLine();
                         library.loanBook(isbn, memberId);
                         Book loanedBook = library.searchByIsbn(isbn);
                         Member borrower = library.getMemberById(memberId);
-                        System.out.printf("\"%s\" by %s (ISBN: %s) has been loaned to %s (ID: %s)\n",
+                        System.out.printf("\"%s\" by %s (ISBN-13: %s) has been loaned to %s (ID: %s)\n",
                                 loanedBook.getTitle(), loanedBook.getAuthor(), loanedBook.getIsbn(),
                                 borrower.getName(), borrower.getMemberId());
                         break;
 
                     case 3:
-                        System.out.print("ISBN: ");
+                        System.out.print("ISBN-13: ");
                         isbn = scanner.nextLine();
                         System.out.print("Member ID: ");
                         memberId = scanner.nextLine();
                         library.returnBook(isbn, memberId);
                         Book returnedBook = library.searchByIsbn(isbn);
                         Member returner = library.getMemberById(memberId);
-                        System.out.printf("\"%s\" (ISBN: %s) has been returned by %s (ID: %s)\n",
+                        System.out.printf("\"%s\" (ISBN-13: %s) has been returned by %s (ID: %s)\n",
                                 returnedBook.getTitle(), returnedBook.getIsbn(),
                                 returner.getName(), returner.getMemberId());
                         break;
@@ -85,7 +85,7 @@ public class LibraryApp {
                     case 4:
                         String method;
                         while (true) {
-                            System.out.print("Search by (title/author/isbn) or press Enter to cancel: ");
+                            System.out.print("Search by (title/author/ISBN) or press Enter to cancel: ");
                             method = scanner.nextLine().trim().toLowerCase();
                             if (method.isEmpty()) {
                                 System.out.println("Search cancelled.");
@@ -110,7 +110,7 @@ public class LibraryApp {
                                 }
                                 break;
                             } else {
-                                System.out.println("Invalid method. Please enter 'title', 'author', or 'isbn'.");
+                                System.out.println("Invalid method. Please enter 'title', 'author', or 'ISBN'.");
                             }
                         }
                         break;
@@ -142,7 +142,7 @@ public class LibraryApp {
                     case 9:
                         String memberSearchMethod;
                         while (true) {
-                            System.out.print("Search by (name/id) or press Enter to cancel: ");
+                            System.out.print("Search by (name/ID) or press Enter to cancel: ");
                             memberSearchMethod = scanner.nextLine().trim().toLowerCase();
                             if (memberSearchMethod.isEmpty()) {
                                 System.out.println("Search cancelled.");
@@ -165,7 +165,7 @@ public class LibraryApp {
                                 }
                                 break;
                             } else {
-                                System.out.println("Invalid method. Please enter 'name' or 'id'.");
+                                System.out.println("Invalid method. Please enter 'name' or 'ID'.");
                             }
                         }
                         break;

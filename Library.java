@@ -110,23 +110,28 @@ public class Library implements Serializable {
         }
     }
 
-    // Lists the entire catalogue, showing status and borrower if applicable
+    // Lists the entire catalogue alphabetically by title, showing status and borrower if applicable
     public void listAllBooks() {
         if (books.isEmpty()) {
             System.out.println("The catalogue is empty.");
         } else {
-            for (Book b : books.values()) {
-                if (b.isLoaned()) {
-                    Member borrower = getBorrowerOf(b);
-                    if (borrower != null) {
-                        System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
+            books.values().stream()
+                .sorted(Comparator.comparing(
+                    book -> book.getTitle().replaceFirst("(?i)^the\\s+", ""),  // remove leading "The ", case-insensitive
+                    String.CASE_INSENSITIVE_ORDER
+                ))
+                .forEach(b -> {
+                    if (b.isLoaned()) {
+                        Member borrower = getBorrowerOf(b);
+                        if (borrower != null) {
+                            System.out.printf("%s [%s (ID: %s)]\n", b, borrower.getName(), borrower.getMemberId());
+                        } else {
+                            System.out.println(b + " [Borrower unknown]");
+                        }
                     } else {
-                        System.out.println(b + " [Borrower unknown]");
+                        System.out.println(b);
                     }
-                } else {
-                    System.out.println(b);
-                }
-            }
+                });
         }
     }
 

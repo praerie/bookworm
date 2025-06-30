@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -175,9 +176,11 @@ public class LibraryApp {
                         }
                         break;
 
-                    case 10: // List all registered members
+                    case 10:
                         System.out.println("Registered Members:");
-                        library.getAllMembers().forEach(System.out::println);
+                        library.getAllMembers().stream()
+                            .sorted(Comparator.comparing(Member::getMemberId)) // sort by member ID
+                            .forEach(System.out::println);
                         break;
 
                     case 11: // Save library state to file and exit program

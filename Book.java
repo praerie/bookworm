@@ -33,6 +33,6 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s by %s (ISBN: %s) - %s", title, author, isbn, isLoaned ? "Loaned" : "Available");
+        return String.format("%s by %s (ISBN-13: %s) - %s", title, author, isbn, isLoaned ? "Loaned" : "Available");
     }
 }
